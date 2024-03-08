@@ -655,8 +655,8 @@ while running:
         for i in objects:
             if [i.body.position[0],i.body.position[1]] == [player_x//1,player_y//1]:
                 i.body.splashed=False
-    
-    pygame.draw.rect(screen, RED, (player_x, player_y, player_size, player_size))
+    col = RED if not inwater else (200, 40, 150)
+    pygame.draw.rect(screen, col, (player_x, player_y, player_size, player_size))
    # pygame.draw.rect(screen, GREEN, ai)
     draw_grid()
     pygame.display.flip()
