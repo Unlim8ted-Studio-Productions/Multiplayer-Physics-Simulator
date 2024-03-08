@@ -349,7 +349,7 @@ def check_tile_collision():
     player_x = max(0, min(player_x, WIDTH - player_size))
     player_y = max(0, min(player_y, HEIGHT - player_size))
 
-def _main():
+def main():
     Point = pygame.Vector2
 
     # INITIAL RUNTIME CONFIGURATIONS
@@ -661,3 +661,5 @@ def _main():
 
     pygame.quit()
     sys.exit()
+if __name__ == "__main__":
+    main()
