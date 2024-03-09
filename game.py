@@ -574,7 +574,7 @@ def check_tile_collision():
                         player_velocity[1] -= 30
                     else:
                         global score
-                        player_x = WIDTH // 2 - player_size // 2
+                        player_x = 9
                         player_y = HEIGHT // 2 - player_size // 2
                         score+=1
 
@@ -812,6 +812,8 @@ while running:
     pygame.draw.rect(screen, col, (player_x, player_y, player_size, player_size))
    # pygame.draw.rect(screen, GREEN, ai)
     draw_grid()
+    text = font.render(f"Points: {score}", False, BLACK)
+    screen.blit(text, (0,0))
     pygame.display.flip()
     clock.tick(60)
 
