@@ -51,11 +51,12 @@ GREEN = (0, 0, 255)
 player_size = 50
 player_speed = 0.0
 player_max_speed = 15
+score=0
 player_acceleration = 0.2
 player_dash_speed = 25.0
 player_jump_strength = 15.0
 gravity = 0.8
-player_x = WIDTH // 2 - player_size // 2
+player_x = 9
 player_y = HEIGHT // 2 - player_size // 2
 player_velocity = [0, 0]
 is_dashing = False
@@ -82,7 +83,7 @@ TILE_SIZE = 32
 GRID_WIDTH, GRID_HEIGHT = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -106,7 +107,7 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]#[[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
+[0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]#[[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
 
 font = pygame.font.SysFont('consolas', 25)
 
@@ -275,6 +276,19 @@ class FlameParticle:
             color = (r, g, b, alpha)
             pygame.draw.circle(self.surf, color, (self.surf.get_width() // 2, self.surf.get_height() // 2), radius)
         screen.blit(self.surf, self.surf.get_rect(center=(self.x, self.y)))
+    def drawb(self, screen):
+        max_surf_size = 2 * self.r
+        self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
+        for i in range(self.alpha_layers, -1, -1):
+            alpha = 255 - i * (255 // self.alpha_layers - 5)
+            if alpha <= 0:
+                alpha = 0
+            radius = self.r * i * i * self.alpha_glow
+            # Color of bubble
+            r, g, b = (200, 200, 255)  # Light blue color for bubble
+            color = (r, g, b, alpha)
+            pygame.draw.circle(self.surf, color, (self.surf.get_width() // 2, self.surf.get_height() // 2), int(radius))
+        screen.blit(self.surf, self.surf.get_rect(center=(self.x, self.y)))
 
 
 class Flame:
@@ -306,6 +320,15 @@ class Flame:
                 continue
             i.update()
             i.draw(screen)
+    def draw_bubbles(self, screen):
+        for i in self.flame_particles:
+            if i.original_r <= 0:
+                self.flame_particles.remove(i)
+                self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
+                del i
+                continue
+            i.update()
+            i.drawb(screen)
 
 def get_curve(points):
     """Parameters:
@@ -382,6 +405,8 @@ def draw_grid():
                     flames[(row, col)] = flame
                 if row*TILE_SIZE < wave.get_target_height():
                     flames[(row, col)].draw_flame(screen)
+                else:
+                    flames[(row, col)].draw_bubbles(screen)
 
 def draw_weather_screen(color):
     screen.fill(color)
@@ -518,7 +543,7 @@ def check_tile_collision():
                     col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE
                 )
 
-                if player_rect.colliderect(tile_rect):
+                if player_rect.colliderect(tile_rect) and grid[row][col] != 4:
                     # Collision resolution in x-axis
                     if (
                         player_rect.y < tile_rect.top
@@ -532,6 +557,10 @@ def check_tile_collision():
                         elif player_velocity[0] < 0:
                             player_x = tile_rect.right
 
+                        
+                    #if grid[row][col] == 2:
+                    #    player_x = WIDTH // 2 - player_size // 2
+                    #    player_y = HEIGHT // 2 - player_size // 2
                     # Collision resolution in y-axis
                     if player_velocity[1] > 0:
                         player_y = tile_rect.top - player_size
@@ -540,6 +569,14 @@ def check_tile_collision():
                     elif player_velocity[1] < 0:
                         player_y = tile_rect.bottom
                         player_velocity[1] = 0
+                elif grid[row][col] == 4 and player_rect.colliderect(tile_rect):
+                    if row*TILE_SIZE > wave.get_target_height():
+                        player_velocity[1] -= 30
+                    else:
+                        global score
+                        player_x = WIDTH // 2 - player_size // 2
+                        player_y = HEIGHT // 2 - player_size // 2
+                        score+=1
 
     # Check screen boundaries
     player_x = max(0, min(player_x, WIDTH - player_size))
