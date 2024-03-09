@@ -2,7 +2,7 @@ import math
 import sys
 from random import randint, uniform
 from typing import Union
-
+import random
 import pygame
 
 Point = pygame.Vector2
@@ -120,7 +120,6 @@ def map_to_range(value, from_x, from_y, to_x, to_y):
     return value * (to_y - to_x) / (from_y - from_x)
 
 
-
 class Ball:
     def __init__(self, x, y):
         self.x = x
@@ -235,8 +234,89 @@ class Wave:
         except IndexError:
             pass
 
+class FlameParticle:
+    alpha_layer_qty = 2
+    alpha_glow_difference_constant = 2
+
+    def __init__(self, x=WIDTH // 2, y=HEIGHT // 2, r=5):
+        self.x = x
+        self.y = y
+        self.r = r
+        self.original_r = r
+        self.alpha_layers = FlameParticle.alpha_layer_qty
+        self.alpha_glow = FlameParticle.alpha_glow_difference_constant
+        max_surf_size = 2 * self.r * self.alpha_layers * self.alpha_layers * self.alpha_glow
+        self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
+        self.burn_rate = 0.1 * random.randint(1, 4)
+
+    def update(self):
+        self.y -= 7 - self.r
+        self.x += random.randint(-self.r, self.r)
+        self.original_r -= self.burn_rate
+        self.r = int(self.original_r)
+        if self.r <= 0:
+            self.r = 1
+
+    def draw(self, screen):
+        max_surf_size = 2 * self.r * self.alpha_layers * self.alpha_layers * self.alpha_glow
+        self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
+        for i in range(self.alpha_layers, -1, -1):
+            alpha = 255 - i * (255 // self.alpha_layers - 5)
+            if alpha <= 0:
+                alpha = 0
+            radius = self.r * i * i * self.alpha_glow
+            if self.r == 4 or self.r == 3:
+                r, g, b = (255, 0, 0)
+            elif self.r == 2:
+                r, g, b = (255, 150, 0)
+            else:
+                r, g, b = (50, 50, 50)
+            # r, g, b = (0, 0, 255)  # uncomment this to make the flame blue
+            color = (r, g, b, alpha)
+            pygame.draw.circle(self.surf, color, (self.surf.get_width() // 2, self.surf.get_height() // 2), radius)
+        screen.blit(self.surf, self.surf.get_rect(center=(self.x, self.y)))
+
+
+class Flame:
+    def __init__(self, x=WIDTH // 2, y=HEIGHT // 2):
+        """Initializes a flame object at the center of the screen.
+        Parameters:
+            - x (int): x-coordinate of the flame's center.
+            - y (int): y-coordinate of the flame's center.
+        Returns:
+            - None: Does not return anything.
+        Processing Logic:
+            - Initialize flame at center of screen.
+            - Set flame intensity to 2.
+            - Create 25 flame particles per intensity.
+            - Randomize flame particle coordinates and size."""
+        self.x = x
+        self.y = y
+        self.flame_intensity = 2
+        self.flame_particles = []
+        for i in range(self.flame_intensity * 25):
+            self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
+
+    def draw_flame(self, screen):
+        for i in self.flame_particles:
+            if i.original_r <= 0:
+                self.flame_particles.remove(i)
+                self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
+                del i
+                continue
+            i.update()
+            i.draw(screen)
 
 def get_curve(points):
+    """Parameters:
+        - points (list): A list of Point objects that represent a curve.
+    Returns:
+        - points (list): A list of Point objects that represent a curve with a higher resolution.
+    Processing Logic:
+        - Creates a new x array.
+        - Creates x and y arrays from points.
+        - Uses cubic interpolation to create a new y array.
+        - Creates new Point objects from the new x and y arrays."""
     x_new = numpy.arange(points[0].x, points[-1].x, 1)
     x = numpy.array([i.x for i in points[:-1]])
     y = numpy.array([i.y for i in points[:-1]])
@@ -264,7 +344,7 @@ def create_walls():
     wall_right.position = (WIDTH + 50, HEIGHT // 2)
     wall_right_shape = pymunk.Poly.create_box(wall_right, (100, HEIGHT))
     space.add(wall_right, wall_right_shape)
-
+flames={}
 # Define a function to draw the grid
 def draw_grid():
     for row in range(GRID_HEIGHT):
@@ -295,6 +375,13 @@ def draw_grid():
                         (col * TILE_SIZE, (row + 1) * TILE_SIZE),
                     ],
                 )
+            elif grid[row][col] == 4:  # Slider tile (at an angle)
+                global flames
+                if (row, col) not in flames:
+                    flame = Flame(col*TILE_SIZE,row*TILE_SIZE)
+                    flames[(row, col)] = flame
+                if row*TILE_SIZE < wave.get_target_height():
+                    flames[(row, col)].draw_flame(screen)
 
 def draw_weather_screen(color):
     screen.fill(color)
@@ -496,12 +583,12 @@ while running:
                 erasing = True
             elif event.button == 4:  # Scroll up
                 current_tile += 1
-                if current_tile > 3:
+                if current_tile > 4:
                     current_tile = 1
             elif event.button == 5:  # Scroll down
                 current_tile -= 1
                 if current_tile < 1:
-                    current_tile = 3
+                    current_tile = 4
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
             erasing = False
