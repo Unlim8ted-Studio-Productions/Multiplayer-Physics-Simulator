@@ -6,7 +6,7 @@ import random
 import pygame
 
 Point = pygame.Vector2
-
+#highscore 25
 # INITIAL RUNTIME CONFIGURATIONS
 
 # You can edit these accordingly based on the modules you have
