@@ -657,6 +657,7 @@ while running:
     elif erasing:
         if 0 <= col < GRID_WIDTH and 0 <= row < GRID_HEIGHT:
             if grid[row][col] != 0:
+                tile_y = row * TILE_SIZE + TILE_SIZE // 2
                 if tile_y > wave.get_target_height():
                     wave.add_volume(-(TILE_SIZE ** 2 * math.pi))
                     print()
