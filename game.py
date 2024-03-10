@@ -67,6 +67,7 @@ is_on_ground = False
 is_on_wall = False
 wall_jump_cooldown = 10
 wall_jump_timer = 0
+splasheffecttimer = 0
 rain = 10
 newrain = 10
 # Colors
@@ -250,8 +251,9 @@ class FlameParticle:
         self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
         self.burn_rate = 0.1 * random.randint(1, 4)
 
-    def update(self):
-        self.y -= 7 - self.r
+    def update(self, down):
+        ychange = -7 + self.r * 2 if down else 7
+        self.y -= ychange - self.r
         self.x += random.randint(-self.r, self.r)
         self.original_r -= self.burn_rate
         self.r = int(self.original_r)
@@ -318,16 +320,16 @@ class Flame:
                 self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
                 del i
                 continue
-            i.update()
+            i.update(False)
             i.draw(screen)
-    def draw_bubbles(self, screen):
+    def draw_bubbles(self, screen, maxheight=5, maxspread=5, down=False):
         for i in self.flame_particles:
             if i.original_r <= 0:
                 self.flame_particles.remove(i)
-                self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
+                self.flame_particles.append(FlameParticle(self.x + random.randint(-maxspread, maxspread), self.y, random.randint(1, maxheight)))
                 del i
                 continue
-            i.update()
+            i.update(down)
             i.drawb(screen)
 
 def get_curve(points):
@@ -592,6 +594,7 @@ radius = 20
 mass = 1
 inwater =False
 done=[]
+splashes={}
 moment = pymunk.moment_for_circle(mass, 0, radius)
 body = pymunk.Body(mass, moment)
 body.position = (player_x//1, player_y//1)  # Starting position
@@ -695,6 +698,7 @@ while running:
         dash_timer = dash_cooldown
     if dash_timer > 0:
         dash_timer -= 1
+
     if keys[pygame.K_UP] and not is_jumping and (is_on_ground or is_on_wall):
         is_jumping = True
         player_velocity[1] = -player_jump_strength
@@ -778,11 +782,27 @@ while running:
             if not i.body.splashed:
                 if i.body.position.y + i.radius >= wave.get_target_height():
                     i.body.splashed = True
+                    if not (i.body.position[0],i.body.position[0]) in splashes:
+                        splash = Flame(i.body.position[0],i.body.position[1]+TILE_SIZE)
+                        splash.flame_intensity=5
+                        for index in range(splash.flame_intensity * 25):
+                            splash.flame_particles.append(FlameParticle(splash.x + random.randint(-5, 5), splash.y, random.randint(1, 5)))
+                        
+                        splashes[(i.body.position[0],i.body.position[1])] = [50, splash, 8, player_velocity[1]]
                     wave.splash(index=wave.get_spring_index_for_x_pos(i.body.position.x), vel=i.radius)
                     if VOLUME_RISE:
                         if i not in done:
                             wave.add_volume(i.radius ** 2 * math.pi)
                             done.append(i)
+        remove=[]
+        for key, item in splashes.items():
+            splashes[key][0] -= 1
+            if splashes[key][0] <= 0:
+                remove.append(key)
+            else:
+                splashes[key][1].draw_bubbles(screen, splashes[key][3] // 1, splashes[key][2] // 1, True)
+        for key in remove:
+            splashes.pop(key)
         for i in tiles:
             if VOLUME_RISE:
                 if i not in done:
