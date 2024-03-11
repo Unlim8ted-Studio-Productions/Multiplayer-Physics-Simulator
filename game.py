@@ -333,7 +333,11 @@ class Flame:
                         maxspread+=randint(-1,1)
                 maxheight = min([maxheight, 8])
                 maxspread = min([maxspread, 8])
-                self.flame_particles.append(FlameParticle(self.x + random.randint(-maxspread, maxspread), self.y, random.randint(1, maxheight)))
+                addx=random.randint(-maxspread, maxspread)
+                if maxheight==1:
+                    maxheight+=randint(-1,1)
+                r=random.randint(1, maxheight)
+                self.flame_particles.append(FlameParticle(self.x + addx, self.y, r))
                 del i
                 continue
             i.update(down)
