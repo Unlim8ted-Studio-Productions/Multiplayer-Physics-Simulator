@@ -326,6 +326,13 @@ class Flame:
         for i in self.flame_particles:
             if i.original_r <= 0:
                 self.flame_particles.remove(i)
+                if maxheight == maxspread:
+                    if random.choice([True,False]):
+                        maxheight+=randint(-1,1)
+                    else:
+                        maxspread+=randint(-1,1)
+                maxheight = min([maxheight, 8])
+                maxspread = min([maxspread, 8])
                 self.flame_particles.append(FlameParticle(self.x + random.randint(-maxspread, maxspread), self.y, random.randint(1, maxheight)))
                 del i
                 continue
@@ -788,7 +795,7 @@ while running:
                         for index in range(splash.flame_intensity * 25):
                             splash.flame_particles.append(FlameParticle(splash.x + random.randint(-5, 5), splash.y, random.randint(1, 5)))
                         
-                        splashes[(i.body.position[0],i.body.position[1])] = [50, splash, 8, player_velocity[1]]
+                        splashes[(i.body.position[0],i.body.position[1])] = [15, splash, 8, player_velocity[1]]
                     wave.splash(index=wave.get_spring_index_for_x_pos(i.body.position.x), vel=i.radius)
                     if VOLUME_RISE:
                         if i not in done:
