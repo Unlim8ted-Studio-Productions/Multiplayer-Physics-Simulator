@@ -6,7 +6,7 @@ import random
 import pygame
 
 Point = pygame.Vector2
-#highscore 25
+# highscore 25
 # INITIAL RUNTIME CONFIGURATIONS
 
 # You can edit these accordingly based on the modules you have
@@ -33,7 +33,6 @@ frame_count = 0  # Count frames for lightning duration
 lightning_duration = 10  # Adjust the duration of the lightning effect
 
 
-
 raindrops = []
 lightning_pos = [(0, 0), (0, 0)]
 clouds = []
@@ -41,7 +40,7 @@ leaves = []
 wind = 0
 newwind = 0
 weather = "thunderstorm"  # Initial weather\
-        
+
 # Colors
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -51,7 +50,7 @@ GREEN = (0, 0, 255)
 player_size = 50
 player_speed = 0.0
 player_max_speed = 15
-score=0
+score = 0
 player_acceleration = 0.2
 player_dash_speed = 25.0
 player_jump_strength = 15.0
@@ -82,40 +81,40 @@ BLACK = (0, 0, 0)
 # Tile attributes
 TILE_SIZE = 32
 GRID_WIDTH, GRID_HEIGHT = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
-grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-[0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]#[[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
+# grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+# [0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
 
-font = pygame.font.SysFont('consolas', 25)
+font = pygame.font.SysFont("consolas", 25)
 
 if USE_PYMUNK:
     space = pymunk.Space()
     space.gravity = GRAVITY
-
 
 
 def map_to_range(value, from_x, from_y, to_x, to_y):
@@ -129,8 +128,8 @@ class Ball:
         self.height = randint(2, 10)
         self.width = randint(5, 50 + 20)
         self.dy = 0
-        self.spring: Union['WaterSpring', None] = None
-        self.next_spring: Union['WaterSpring', None] = None
+        self.spring: Union["WaterSpring", None] = None
+        self.next_spring: Union["WaterSpring", None] = None
         self.rot = randint(0, 360)
         self.rot = 0
         self.gravity = 0.5
@@ -156,7 +155,7 @@ class Ball:
             img = pygame.transform.scale(BALL_IMAGE, (size, size))
             surf.blit(img, img.get_rect(center=(self.x, self.y)))
         else:
-            pygame.draw.circle(surf, 'green', (self.x, self.y), size / 2)
+            pygame.draw.circle(surf, "green", (self.x, self.y), size / 2)
 
 
 class WaterSpring:
@@ -179,13 +178,16 @@ class WaterSpring:
         self.height += self.vel
 
     def draw(self, surf: pygame.Surface):
-        pygame.draw.circle(surf, 'white', (self.x, self.height), 1)
+        pygame.draw.circle(surf, "white", (self.x, self.height), 1)
 
 
 class Wave:
     def __init__(self):
         diff = 20
-        self.springs = [WaterSpring(x=i * diff + 0, target_height=HEIGHT-100) for i in range(WIDTH // diff + 2)]
+        self.springs = [
+            WaterSpring(x=i * diff + 0, target_height=HEIGHT - 100)
+            for i in range(WIDTH // diff + 2)
+        ]
         self.points = []
         self.diff = diff
 
@@ -217,15 +219,19 @@ class Wave:
         pygame.draw.polygon(surf, (0, 0, 255, 50), self.points)
 
     def draw_line(self, surf: pygame.Surface):
-        pygame.draw.lines(surf, 'white', False, self.points[:-2], 5)
+        pygame.draw.lines(surf, "white", False, self.points[:-2], 5)
 
     def spread_wave(self):
         spread = 0.1
         for i in range(len(self.springs)):
             if i > 0:
-                self.springs[i - 1].vel += spread * (self.springs[i].height - self.springs[i - 1].height)
+                self.springs[i - 1].vel += spread * (
+                    self.springs[i].height - self.springs[i - 1].height
+                )
             try:
-                self.springs[i + 1].vel += spread * (self.springs[i].height - self.springs[i + 1].height)
+                self.springs[i + 1].vel += spread * (
+                    self.springs[i].height - self.springs[i + 1].height
+                )
             except IndexError:
                 pass
 
@@ -235,6 +241,7 @@ class Wave:
             return vel
         except IndexError:
             pass
+
 
 class FlameParticle:
     alpha_layer_qty = 2
@@ -247,7 +254,9 @@ class FlameParticle:
         self.original_r = r
         self.alpha_layers = FlameParticle.alpha_layer_qty
         self.alpha_glow = FlameParticle.alpha_glow_difference_constant
-        max_surf_size = 2 * self.r * self.alpha_layers * self.alpha_layers * self.alpha_glow
+        max_surf_size = (
+            2 * self.r * self.alpha_layers * self.alpha_layers * self.alpha_glow
+        )
         self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
         self.burn_rate = 0.1 * random.randint(1, 4)
 
@@ -261,7 +270,9 @@ class FlameParticle:
             self.r = 1
 
     def draw(self, screen):
-        max_surf_size = 2 * self.r * self.alpha_layers * self.alpha_layers * self.alpha_glow
+        max_surf_size = (
+            2 * self.r * self.alpha_layers * self.alpha_layers * self.alpha_glow
+        )
         self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
         for i in range(self.alpha_layers, -1, -1):
             alpha = 255 - i * (255 // self.alpha_layers - 5)
@@ -276,8 +287,14 @@ class FlameParticle:
                 r, g, b = (50, 50, 50)
             # r, g, b = (0, 0, 255)  # uncomment this to make the flame blue
             color = (r, g, b, alpha)
-            pygame.draw.circle(self.surf, color, (self.surf.get_width() // 2, self.surf.get_height() // 2), radius)
+            pygame.draw.circle(
+                self.surf,
+                color,
+                (self.surf.get_width() // 2, self.surf.get_height() // 2),
+                radius,
+            )
         screen.blit(self.surf, self.surf.get_rect(center=(self.x, self.y)))
+
     def drawb(self, screen):
         max_surf_size = 2 * self.r
         self.surf = pygame.Surface((max_surf_size, max_surf_size), pygame.SRCALPHA)
@@ -289,7 +306,12 @@ class FlameParticle:
             # Color of bubble
             r, g, b = (200, 200, 255)  # Light blue color for bubble
             color = (r, g, b, alpha)
-            pygame.draw.circle(self.surf, color, (self.surf.get_width() // 2, self.surf.get_height() // 2), int(radius))
+            pygame.draw.circle(
+                self.surf,
+                color,
+                (self.surf.get_width() // 2, self.surf.get_height() // 2),
+                int(radius),
+            )
         screen.blit(self.surf, self.surf.get_rect(center=(self.x, self.y)))
 
 
@@ -311,33 +333,49 @@ class Flame:
         self.flame_intensity = 2
         self.flame_particles = []
         for i in range(self.flame_intensity * 25):
-            self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
+            self.flame_particles.append(
+                FlameParticle(
+                    self.x + random.randint(-5, 5), self.y, random.randint(1, 5)
+                )
+            )
 
     def draw_flame(self, screen):
         for i in self.flame_particles:
             if i.original_r <= 0:
                 self.flame_particles.remove(i)
-                self.flame_particles.append(FlameParticle(self.x + random.randint(-5, 5), self.y, random.randint(1, 5)))
+                self.flame_particles.append(
+                    FlameParticle(
+                        self.x + random.randint(-5, 5), self.y, random.randint(1, 5)
+                    )
+                )
                 del i
                 continue
             i.update(False)
             i.draw(screen)
+
     def draw_bubbles(self, screen, maxheight=5, maxspread=5, down=False):
         for i in self.flame_particles:
             if i.original_r <= 0:
                 self.flame_particles.remove(i)
                 if maxheight == maxspread:
-                    if random.choice([True,False]):
-                        maxheight+=randint(-1,1)
+                    if random.choice([True, False]):
+                        maxheight += randint(-1, 1)
                     else:
-                        maxspread+=randint(-1,1)
+                        maxspread += randint(-1, 1)
                 maxheight = min([maxheight, 8])
                 maxspread = min([maxspread, 8])
-                self.flame_particles.append(FlameParticle(self.x + random.randint(-maxspread, maxspread), self.y, random.randint(1, maxheight)))
+                self.flame_particles.append(
+                    FlameParticle(
+                        self.x + random.randint(-maxspread, maxspread),
+                        self.y,
+                        random.randint(1, maxheight),
+                    )
+                )
                 del i
                 continue
             i.update(down)
             i.drawb(screen)
+
 
 def get_curve(points):
     """Parameters:
@@ -352,7 +390,7 @@ def get_curve(points):
     x_new = numpy.arange(points[0].x, points[-1].x, 1)
     x = numpy.array([i.x for i in points[:-1]])
     y = numpy.array([i.y for i in points[:-1]])
-    f = interp1d(x, y, kind='cubic', fill_value='extrapolate')
+    f = interp1d(x, y, kind="cubic", fill_value="extrapolate")
     y_new = f(x_new)
     x1 = list(x_new)
     y1 = list(y_new)
@@ -361,22 +399,26 @@ def get_curve(points):
 
 
 def create_walls():
-    base = pymunk.Body(mass=10 ** 5, moment=0, body_type=pymunk.Body.STATIC)
+    base = pymunk.Body(mass=10**5, moment=0, body_type=pymunk.Body.STATIC)
     base.position = (WIDTH // 2, HEIGHT + 25)
     base_shape = pymunk.Poly.create_box(base, (WIDTH, 50))
     base_shape.friction = 0.2
     space.add(base, base_shape)
 
-    wall_left = pymunk.Body(mass=10 ** 5, moment=0, body_type=pymunk.Body.STATIC)
+    wall_left = pymunk.Body(mass=10**5, moment=0, body_type=pymunk.Body.STATIC)
     wall_left.position = (-50, HEIGHT // 2)
     wall_left_shape = pymunk.Poly.create_box(wall_left, (100, HEIGHT))
     space.add(wall_left, wall_left_shape)
 
-    wall_right = pymunk.Body(mass=10 ** 5, moment=0, body_type=pymunk.Body.STATIC)
+    wall_right = pymunk.Body(mass=10**5, moment=0, body_type=pymunk.Body.STATIC)
     wall_right.position = (WIDTH + 50, HEIGHT // 2)
     wall_right_shape = pymunk.Poly.create_box(wall_right, (100, HEIGHT))
     space.add(wall_right, wall_right_shape)
-flames={}
+
+
+flames = {}
+
+
 # Define a function to draw the grid
 def draw_grid():
     for row in range(GRID_HEIGHT):
@@ -410,15 +452,17 @@ def draw_grid():
             elif grid[row][col] == 4:  # Slider tile (at an angle)
                 global flames
                 if (row, col) not in flames:
-                    flame = Flame(col*TILE_SIZE,row*TILE_SIZE)
+                    flame = Flame(col * TILE_SIZE, row * TILE_SIZE)
                     flames[(row, col)] = flame
-                if row*TILE_SIZE < wave.get_target_height():
+                if row * TILE_SIZE < wave.get_target_height():
                     flames[(row, col)].draw_flame(screen)
                 else:
                     flames[(row, col)].draw_bubbles(screen)
 
+
 def draw_weather_screen(color):
     screen.fill(color)
+
 
 def draw_rain(screen, raindrops, wind):
     for drop in raindrops:
@@ -479,7 +523,6 @@ def draw_leaves(screen, leaves, wind):
         # Update raindrop position based on wind
         leaf.x += wind + uniform(-0.1, 0.1)
 
-
     # Remove raindrops that have moved out of the screen or faded completely
     leaves[:] = [
         leaf for leaf in leaves if leaf.x < infoObject.current_w and leaf.x > 0
@@ -539,6 +582,7 @@ def update_weather(weather, raindrops, lightning_pos, clouds, leaves, wind, rain
             )
             leaves.append(leaf)
 
+
 # Update collision logic
 def check_tile_collision():
     global is_on_ground, is_on_wall, player_x, player_y, player_velocity
@@ -566,8 +610,7 @@ def check_tile_collision():
                         elif player_velocity[0] < 0:
                             player_x = tile_rect.right
 
-                        
-                    #if grid[row][col] == 2:
+                    # if grid[row][col] == 2:
                     #    player_x = WIDTH // 2 - player_size // 2
                     #    player_y = HEIGHT // 2 - player_size // 2
                     # Collision resolution in y-axis
@@ -579,17 +622,18 @@ def check_tile_collision():
                         player_y = tile_rect.bottom
                         player_velocity[1] = 0
                 elif grid[row][col] == 4 and player_rect.colliderect(tile_rect):
-                    if row*TILE_SIZE > wave.get_target_height():
+                    if row * TILE_SIZE > wave.get_target_height():
                         player_velocity[1] -= 30
                     else:
                         global score
                         player_x = 9
                         player_y = HEIGHT // 2 - player_size // 2
-                        score+=1
+                        score += 1
 
     # Check screen boundaries
     player_x = max(0, min(player_x, WIDTH - player_size))
     player_y = max(0, min(player_y, HEIGHT - player_size))
+
 
 ai = pygame.Rect(400, 300, 50, 50)
 # Main game loop
@@ -599,27 +643,27 @@ s = pygame.Surface(screen.get_size(), pygame.SRCALPHA).convert_alpha()
 # PyMunk circle body and shape
 radius = 20
 mass = 1
-inwater =False
-done=[]
-splashes={}
+inwater = False
+done = []
+splashes = {}
 moment = pymunk.moment_for_circle(mass, 0, radius)
 body = pymunk.Body(mass, moment)
-body.position = (player_x//1, player_y//1)  # Starting position
+body.position = (player_x // 1, player_y // 1)  # Starting position
 body.splashed = False
 shape = pymunk.Circle(body, radius)
 shape.elasticity = 9  # Set elasticity for bouncing effect
 objects = [shape]
 floating_objects = []
 tiles = []
-current_tile=1
-direction=True
-#if USE_PYMUNK:
+current_tile = 1
+direction = True
+# if USE_PYMUNK:
 #    create_walls()
 clock = pygame.time.Clock()
 running = True
 drawing = False  # Indicates whether the user is drawing tiles
 erasing = False  # Indicates whether the user is erasing tiles
-while running: 
+while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -656,12 +700,12 @@ while running:
     if drawing:
         if 0 <= col < GRID_WIDTH and 0 <= row < GRID_HEIGHT:
             if grid[row][col] == 0:
-                 # Create a PyMunk circle at the tile position
+                # Create a PyMunk circle at the tile position
                 tile_x = col * TILE_SIZE + TILE_SIZE // 2
                 tile_y = row * TILE_SIZE + TILE_SIZE // 2
                 mass = 1
                 if tile_y > wave.get_target_height():
-                    wave.add_volume(TILE_SIZE ** 2 * math.pi)
+                    wave.add_volume(TILE_SIZE**2 * math.pi)
             grid[row][col] = current_tile
 
     elif erasing:
@@ -669,22 +713,21 @@ while running:
             if grid[row][col] != 0:
                 tile_y = row * TILE_SIZE + TILE_SIZE // 2
                 if tile_y > wave.get_target_height():
-                    wave.add_volume(-(TILE_SIZE ** 2 * math.pi))
+                    wave.add_volume(-(TILE_SIZE**2 * math.pi))
                     print()
             grid[row][col] = 0
-
 
     keys = pygame.key.get_pressed()
 
     player_velocity[1] += gravity
 
     if keys[pygame.K_LEFT]:
-        direction=False
+        direction = False
         if player_speed > 0:
             player_speed /= 1.1
         player_speed -= player_acceleration
     elif keys[pygame.K_RIGHT]:
-        direction=True
+        direction = True
         if player_speed < 0:
             player_speed /= 1.1
         player_speed += player_acceleration
@@ -718,40 +761,36 @@ while running:
 
     player_velocity[0] = player_speed
 
-    
-    body.position = [int(player_x),int(player_y)]
+    body.position = [int(player_x), int(player_y)]
     is_jumping = False
     if not inwater:
         is_on_ground = player_y >= HEIGHT - player_size
     else:
         is_on_ground = True
     is_on_wall = player_x <= 0 or player_x >= WIDTH - player_size
-    
+
     if player_y + 20 >= wave.get_target_height():
-       # player_y += wave.get_target_height() - wave.springs[wave.get_spring_index_for_x_pos(player_x)].height
-        inwater=True
-        player_acceleration = .02
-       # player_max_speed = 5
-        gravity = .2
+        # player_y += wave.get_target_height() - wave.springs[wave.get_spring_index_for_x_pos(player_x)].height
+        inwater = True
+        player_acceleration = 0.02
+        # player_max_speed = 5
+        gravity = 0.2
         player_jump_strength = 3
     else:
-        player_acceleration=.2
+        player_acceleration = 0.2
         player_max_speed = 15
-        gravity = .8
+        gravity = 0.8
         player_jump_strength = 15
-        inwater=False
+        inwater = False
         body.splashed = False
-
 
     player_x += player_velocity[0]
     player_y += player_velocity[1]
-    
+
     # Inside the game loop, after updating player position
     check_tile_collision()
-    
-    
-    
-     # AI movement
+
+    # AI movement
     dx = player_x - ai.x
     dy = player_y - ai.y
     dist = math.sqrt((player_x - ai.x) ** 2 + (player_y - ai.y) ** 2)
@@ -759,7 +798,7 @@ while running:
     if dist > 50:  # Move towards player if not too close
         ai.x += (dx / dist) * 3
         ai.y += (dy / dist) * 3
-    
+
     if randint(0, 100) < 5:  # Probability of wind direction change occurring
         newwind = randint(-3, 3)  # Introduce wind for raindrops
     if wind < newwind:
@@ -773,7 +812,7 @@ while running:
         rain += 1
     if rain > newrain:
         rain -= 1
-    #if randint(0,1000) <=5:
+    # if randint(0,1000) <=5:
     #    weather=random.choice(["rain", "cloudy", "thunderstorm", "windy"])
     # Update and draw weather effects
     update_weather(weather, raindrops, lightning_pos, clouds, leaves, wind, rain)
@@ -783,38 +822,56 @@ while running:
     draw_leaves(screen, leaves, wind)
     if USE_PYMUNK:
         space.step(1 / FPS)
-        #screen.fill('black')
+        # screen.fill('black')
         s.fill(0)
         for i in objects:
             if not i.body.splashed:
                 if i.body.position.y + i.radius >= wave.get_target_height():
                     i.body.splashed = True
-                    if not (i.body.position[0],i.body.position[0]) in splashes:
-                        splash = Flame(i.body.position[0],i.body.position[1]+TILE_SIZE)
-                        splash.flame_intensity=5
+                    if not (i.body.position[0], i.body.position[0]) in splashes:
+                        splash = Flame(
+                            i.body.position[0], i.body.position[1] + TILE_SIZE
+                        )
+                        splash.flame_intensity = 5
                         for index in range(splash.flame_intensity * 25):
-                            splash.flame_particles.append(FlameParticle(splash.x + random.randint(-5, 5), splash.y, random.randint(1, 5)))
-                        
-                        splashes[(i.body.position[0],i.body.position[1])] = [15, splash, 8, player_velocity[1]]
-                    wave.splash(index=wave.get_spring_index_for_x_pos(i.body.position.x), vel=i.radius)
+                            splash.flame_particles.append(
+                                FlameParticle(
+                                    splash.x + random.randint(-5, 5),
+                                    splash.y,
+                                    random.randint(1, 5),
+                                )
+                            )
+
+                        splashes[(i.body.position[0], i.body.position[1])] = [
+                            15,
+                            splash,
+                            8,
+                            player_velocity[1],
+                        ]
+                    wave.splash(
+                        index=wave.get_spring_index_for_x_pos(i.body.position.x),
+                        vel=i.radius,
+                    )
                     if VOLUME_RISE:
                         if i not in done:
-                            wave.add_volume(i.radius ** 2 * math.pi)
+                            wave.add_volume(i.radius**2 * math.pi)
                             done.append(i)
-        remove=[]
+        remove = []
         for key, item in splashes.items():
             splashes[key][0] -= 1
             if splashes[key][0] <= 0:
                 remove.append(key)
             else:
-                splashes[key][1].draw_bubbles(screen, splashes[key][3] // 1, splashes[key][2] // 1, True)
+                splashes[key][1].draw_bubbles(
+                    screen, splashes[key][3] // 1, splashes[key][2] // 1, True
+                )
         for key in remove:
             splashes.pop(key)
         for i in tiles:
             if VOLUME_RISE:
                 if i not in done:
                     if i[0] + i[1] > wave.get_target_height():
-                        wave.add_volume(60 ** 2 * math.pi)
+                        wave.add_volume(60**2 * math.pi)
                         done.append(i)
         for i in floating_objects:
             i.update()
@@ -832,16 +889,19 @@ while running:
         wave.draw(s)
         screen.blit(s, (0, 0))
         wave.draw_line(screen)
-    if player_y<=wave.get_target_height():
+    if player_y <= wave.get_target_height():
         for i in objects:
-            if [i.body.position[0],i.body.position[1]] == [player_x//1,player_y//1]:
-                i.body.splashed=False
+            if [i.body.position[0], i.body.position[1]] == [
+                player_x // 1,
+                player_y // 1,
+            ]:
+                i.body.splashed = False
     col = RED if not inwater else (200, 40, 150)
     pygame.draw.rect(screen, col, (player_x, player_y, player_size, player_size))
-   # pygame.draw.rect(screen, GREEN, ai)
+    # pygame.draw.rect(screen, GREEN, ai)
     draw_grid()
     text = font.render(f"Points: {score}", False, BLACK)
-    screen.blit(text, (0,0))
+    screen.blit(text, (0, 0))
     pygame.display.flip()
     clock.tick(60)
 
