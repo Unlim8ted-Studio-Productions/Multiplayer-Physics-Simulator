@@ -82,7 +82,7 @@ BLACK = (0, 0, 0)
 TILE_SIZE = 32
 GRID_WIDTH, GRID_HEIGHT = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-#grid = gd #might not work because different screen sisez
+#grid = gd #might not
 font = pygame.font.SysFont("consolas", 25)
 
 if USE_PYMUNK:
