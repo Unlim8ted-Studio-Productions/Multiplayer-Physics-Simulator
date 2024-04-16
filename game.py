@@ -45,7 +45,6 @@ weather = "thunderstorm"  # Initial weather\
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 GREEN = (0, 0, 255)
-
 # Player attributes
 player_size = 50
 player_speed = 0.0
@@ -398,12 +397,26 @@ def create_walls():
 
 flames = {}
 
+def LightAlgorithm(colors, x, y, playerX, playerY, TimeOfDay):
+    SunPos = [TimeOfDay * 25, TimeOfDay * 10]
+    blockPos = [x, y]
+    Darken = round(math.dist(blockPos, SunPos) * TimeOfDay)
+    num_list = [100, 139, 69, 19, 115, 85, 34, 0, 128, 211, 255, 223, 135, 206, 235]
+    
+    colorslist = []
+    for num in num_list:
+        colorslist.append((
+            max(num - Darken, 0),
+            max(num - Darken if i % 3 != 1 else num, 0),
+            max(num - Darken if i % 3 == 0 else num, 0)
+        ))
+    return colorslist
 
 # Define a function to draw the grid
 def draw_grid():
     for row in range(GRID_HEIGHT):
         for col in range(GRID_WIDTH):
-            if grid[row][col] == 1:
+            if grid[row][col] == 1 or grid[row][col] == 5:
                 pygame.draw.rect(
                     screen,
                     GREEN,
@@ -438,6 +451,33 @@ def draw_grid():
                     flames[(row, col)].draw_flame(screen)
                 else:
                     flames[(row, col)].draw_bubbles(screen)
+                    
+            if isinstance(grid[row][col], list):
+                if grid[row][col][0] == 5:
+                    pygame.draw.rect(
+                    screen,
+                    (25,65,35),
+                    (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE),
+                )
+            if isinstance(grid[row][col], list):
+                if grid[row][col][0] == 5:
+                    grid[row][col][1]+=1
+                    if  grid[row][col][1]>=40:
+                        grid[row][col][1]=0
+
+                        # Ensure tile stays within bounds
+                        if col + 3 >= GRID_WIDTH:
+                            ad = 0
+                            add = 1
+                            addd = 2
+                        else:
+                            ad= col + 1
+                            add = col+2
+                        # Update grid with new tile position
+                        grid[row][ad] = [5,0]
+                        grid[row][add] = [5,0]
+                        grid[row][col] = 0
+
 
 
 def draw_weather_screen(color):
@@ -610,6 +650,7 @@ def check_tile_collision():
                         player_y = HEIGHT // 2 - player_size // 2
                         score += 1
 
+
     # Check screen boundaries
     player_x = max(0, min(player_x, WIDTH - player_size))
     player_y = max(0, min(player_y, HEIGHT - player_size))
@@ -654,12 +695,12 @@ while running:
                 erasing = True
             elif event.button == 4:  # Scroll up
                 current_tile += 1
-                if current_tile > 4:
+                if current_tile > 5:
                     current_tile = 1
             elif event.button == 5:  # Scroll down
                 current_tile -= 1
                 if current_tile < 1:
-                    current_tile = 4
+                    current_tile = 5
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
             erasing = False
@@ -686,7 +727,10 @@ while running:
                 mass = 1
                 if tile_y > wave.get_target_height():
                     wave.add_volume(TILE_SIZE**2 * math.pi)
-            grid[row][col] = current_tile
+            if current_tile != 5:
+                grid[row][col] = current_tile
+            else:
+                grid[row][col] = [current_tile, 0]
 
     elif erasing:
         if 0 <= col < GRID_WIDTH and 0 <= row < GRID_HEIGHT:
