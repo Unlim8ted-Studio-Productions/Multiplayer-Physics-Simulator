@@ -82,7 +82,7 @@ BLACK = (0, 0, 0)
 TILE_SIZE = 32
 GRID_WIDTH, GRID_HEIGHT = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-#grid = gd #might not
+#grid = gd #might not work with different display sizes or tile sizes
 font = pygame.font.SysFont("consolas", 25)
 
 if USE_PYMUNK:
@@ -724,10 +724,14 @@ while running:
     is_dashing = False
     if keys[pygame.K_SPACE] and not is_dashing and dash_timer <= 0:
         is_dashing = True
-        player_speed += player_dash_speed if player_speed >= 0 else -player_dash_speed
+        if direction:
+            player_speed += player_dash_speed
+        else:
+            player_speed -= player_dash_speed
         dash_timer = dash_cooldown
     if dash_timer > 0:
         dash_timer -= 1
+        
 
     if keys[pygame.K_UP] and not is_jumping and (is_on_ground or is_on_wall):
         is_jumping = True
