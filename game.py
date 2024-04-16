@@ -1,10 +1,19 @@
+import ast
 import math
+import os
 import sys
 from random import randint, uniform
 from typing import Union
 import random
 import pygame
-from grid import grid as gd
+import tkinter as tk
+from tkinter import filedialog
+import importlib.machinery
+import importlib.util
+import sys
+
+
+# from saves.grid import grid as gd
 Point = pygame.Vector2
 # highscore 25
 # INITIAL RUNTIME CONFIGURATIONS
@@ -81,7 +90,7 @@ BLACK = (0, 0, 0)
 TILE_SIZE = 32
 GRID_WIDTH, GRID_HEIGHT = WIDTH // TILE_SIZE, HEIGHT // TILE_SIZE
 grid = [[0 for _ in range(GRID_WIDTH)] for _ in range(GRID_HEIGHT)]
-#grid = gd #might not work with different display sizes or tile sizes
+# grid = gd #might not work with different display sizes or tile sizes
 font = pygame.font.SysFont("consolas", 25)
 
 if USE_PYMUNK:
@@ -336,13 +345,13 @@ class Flame:
                         maxspread += randint(-1, 1)
                 maxheight = min([maxheight, 8])
                 maxspread = min([maxspread, 8])
-                addx=random.randint(-maxspread, maxspread)
-                #if maxheight==1:
+                addx = random.randint(-maxspread, maxspread)
+                # if maxheight==1:
                 #    maxheight+=randint(-1,1)
                 try:
-                    r=random.randint(1, maxheight)
+                    r = random.randint(1, maxheight)
                 except:
-                    r=1
+                    r = 1
                 self.flame_particles.append(FlameParticle(self.x + addx, self.y, r))
                 del i
                 continue
@@ -370,12 +379,14 @@ def get_curve(points):
     points = [Point(x1[i], y1[i]) for i in range(len(x1))]
     return points
 
-def draw_speed_lines(screen): 
+
+def draw_speed_lines(screen):
     # Draw lines from the edges to the center
     pygame.draw.line(screen, WHITE, (0, 0), (WIDTH // 2, HEIGHT // 2))
     pygame.draw.line(screen, WHITE, (WIDTH, 0), (WIDTH // 2, HEIGHT // 2))
     pygame.draw.line(screen, WHITE, (0, HEIGHT), (WIDTH // 2, HEIGHT // 2))
     pygame.draw.line(screen, WHITE, (WIDTH, HEIGHT), (WIDTH // 2, HEIGHT // 2))
+
 
 def create_walls():
     base = pymunk.Body(mass=10**5, moment=0, body_type=pymunk.Body.STATIC)
@@ -397,20 +408,24 @@ def create_walls():
 
 flames = {}
 
+
 def LightAlgorithm(colors, x, y, playerX, playerY, TimeOfDay):
     SunPos = [TimeOfDay * 25, TimeOfDay * 10]
     blockPos = [x, y]
     Darken = round(math.dist(blockPos, SunPos) * TimeOfDay)
     num_list = [100, 139, 69, 19, 115, 85, 34, 0, 128, 211, 255, 223, 135, 206, 235]
-    
+
     colorslist = []
     for num in num_list:
-        colorslist.append((
-            max(num - Darken, 0),
-            max(num - Darken if i % 3 != 1 else num, 0),
-            max(num - Darken if i % 3 == 0 else num, 0)
-        ))
+        colorslist.append(
+            (
+                max(num - Darken, 0),
+                max(num - Darken if i % 3 != 1 else num, 0),
+                max(num - Darken if i % 3 == 0 else num, 0),
+            )
+        )
     return colorslist
+
 
 # Define a function to draw the grid
 def draw_grid():
@@ -451,33 +466,51 @@ def draw_grid():
                     flames[(row, col)].draw_flame(screen)
                 else:
                     flames[(row, col)].draw_bubbles(screen)
-                    
+
             if isinstance(grid[row][col], list):
-                if grid[row][col][0] == 5:
+                if grid[row][col][0] == 5 or grid[row][col][0] == 6:
                     pygame.draw.rect(
-                    screen,
-                    (25,65,35),
-                    (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE),
-                )
+                        screen,
+                        (25, 65, 35),
+                        (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE, TILE_SIZE),
+                    )
             if isinstance(grid[row][col], list):
                 if grid[row][col][0] == 5:
-                    grid[row][col][1]+=1
-                    if  grid[row][col][1]>=40:
-                        grid[row][col][1]=0
+                    grid[row][col][1] += 1
+                    if grid[row][col][1] >= 40:
+                        grid[row][col][1] = 0
 
                         # Ensure tile stays within bounds
                         if col + 3 >= GRID_WIDTH:
                             ad = 0
                             add = 1
-                            addd = 2
                         else:
-                            ad= col + 1
-                            add = col+2
+                            ad = col + 1
+                            add = col + 2
+                            # if grid[row][ad] == 1:
+                            #    ad=0
+                            # if grid[row][add] == 1:
+                            #    add=1
                         # Update grid with new tile position
-                        grid[row][ad] = [5,0]
-                        grid[row][add] = [5,0]
+                        grid[row][ad] = [5, 0]
+                        grid[row][add] = [5, 0]
                         grid[row][col] = 0
+            if isinstance(grid[row][col], list):
+                if grid[row][col][0] == 6:
+                    grid[row][col][1] += 1
+                    if grid[row][col][1] >= 40:
+                        grid[row][col][1] = 0
 
+                        # Ensure tile stays within bounds
+                        if row - 1 >= GRID_HEIGHT:
+                            ad = 0
+                        else:
+                            ad = row - 1
+                            # if grid[ad][col] == 1:
+                            #    ad=0
+                        # Update grid with new tile position
+                        grid[ad][col] = [6, 0]
+                        grid[row][col] = 0
 
 
 def draw_weather_screen(color):
@@ -650,7 +683,6 @@ def check_tile_collision():
                         player_y = HEIGHT // 2 - player_size // 2
                         score += 1
 
-
     # Check screen boundaries
     player_x = max(0, min(player_x, WIDTH - player_size))
     player_y = max(0, min(player_y, HEIGHT - player_size))
@@ -695,22 +727,46 @@ while running:
                 erasing = True
             elif event.button == 4:  # Scroll up
                 current_tile += 1
-                if current_tile > 5:
+                if current_tile > 6:
                     current_tile = 1
             elif event.button == 5:  # Scroll down
                 current_tile -= 1
                 if current_tile < 1:
-                    current_tile = 5
+                    current_tile = 6
         elif event.type == pygame.MOUSEBUTTONUP:
             drawing = False
             erasing = False
         elif event.type == pygame.KEYDOWN:
-            if (
-                event.key == pygame.K_s
-            ):  # Save the grid to a file when 's' key is pressed
-                with open("grid.txt", "w") as file:
-                    for row in grid:
-                        file.write(" ".join(map(str, row)) + "\n")
+            if event.key == pygame.K_s:
+                # Create Tkinter root window
+                root = tk.Tk()
+                root.withdraw()  # Hide the root window
+
+                # Open a file dialog for saving the map file
+                filename = filedialog.asksaveasfilename(
+                    defaultextension=".map", filetypes=[("Map files", "*.map")], initialdir="saves"
+                )
+                root.destroy()  # Close the Tkinter root window
+
+                if filename:  # Check if a file name was selected
+                    # Check if the selected file already exists
+                    if os.path.exists(filename):
+                        print("File already exists. Choose a different name.")
+                    else:
+                        # Save the grid to the selected file
+                        with open(filename, "w") as file:
+                            file.write(str(grid))  # Write the grid data to the file
+                        print(f"Grid saved to {filename}")
+            if event.key == pygame.K_o:
+                # Create Tkinter root window
+                root = tk.Tk()
+                root.withdraw()  # Hide the root window
+
+                # Open a file dialog for opening the map file
+                filename= filedialog.askopenfile(defaultextension=".map", filetypes=[("Map files", "*.map")], initialdir="saves")
+                grid = ast.literal_eval(filename.read())
+                GRID_HEIGHT = len(grid)
+                GRID_WIDTH = len(grid[0])
 
     # Get the mouse position
     mouse_x, mouse_y = pygame.mouse.get_pos()
@@ -727,7 +783,7 @@ while running:
                 mass = 1
                 if tile_y > wave.get_target_height():
                     wave.add_volume(TILE_SIZE**2 * math.pi)
-            if current_tile != 5:
+            if current_tile != 5 and current_tile != 6:
                 grid[row][col] = current_tile
             else:
                 grid[row][col] = [current_tile, 0]
@@ -760,7 +816,7 @@ while running:
             player_speed -= player_acceleration
         elif player_speed < 0:
             player_speed += player_acceleration
-   
+
     if player_speed > player_max_speed:
         player_speed = player_max_speed
     elif player_speed < -player_max_speed:
@@ -775,13 +831,18 @@ while running:
             else:
                 player_speed -= player_dash_speed
         else:
-            player_speed += player_dash_speed if player_speed >= 0 else -player_dash_speed
+            player_speed += (
+                player_dash_speed if player_speed >= 0 else -player_dash_speed
+            )
         dash_timer = dash_cooldown
     if dash_timer > 0:
         dash_timer -= 1
-        
 
-    if  (keys[pygame.K_w] or keys[pygame.K_UP]) and not is_jumping and (is_on_ground or is_on_wall):
+    if (
+        (keys[pygame.K_w] or keys[pygame.K_UP])
+        and not is_jumping
+        and (is_on_ground or is_on_wall)
+    ):
         is_jumping = True
         player_velocity[1] = -player_jump_strength
         if is_on_wall:
@@ -929,13 +990,13 @@ while running:
             ]:
                 i.body.splashed = False
     col = RED if not inwater else (200, 40, 150)
-    
-    #if is_dashing:
+
+    # if is_dashing:
     #    draw_speed_lines(screen)
     pygame.draw.rect(screen, col, (player_x, player_y, player_size, player_size))
     # pygame.draw.rect(screen, GREEN, ai)
     draw_grid()
-    text = font.render(f"Points: {score}", False, BLACK)
+    text = font.render(f"Points: {score} s to save o to open", False, BLACK)
     screen.blit(text, (0, 0))
     pygame.display.flip()
     clock.tick(60)
