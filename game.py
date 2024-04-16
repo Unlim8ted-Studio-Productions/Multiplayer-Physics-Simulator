@@ -701,12 +701,12 @@ while running:
 
     player_velocity[1] += gravity
 
-    if keys[pygame.K_LEFT]:
+    if keys[pygame.K_LEFT] or keys[pygame.K_a]:
         direction = False
         if player_speed > 0:
             player_speed /= 1.1
         player_speed -= player_acceleration
-    elif keys[pygame.K_RIGHT]:
+    elif keys[pygame.K_RIGHT] or keys[pygame.K_d]:
         direction = True
         if player_speed < 0:
             player_speed /= 1.1
@@ -716,6 +716,7 @@ while running:
             player_speed -= player_acceleration
         elif player_speed < 0:
             player_speed += player_acceleration
+   
     if player_speed > player_max_speed:
         player_speed = player_max_speed
     elif player_speed < -player_max_speed:
@@ -724,16 +725,19 @@ while running:
     is_dashing = False
     if keys[pygame.K_SPACE] and not is_dashing and dash_timer <= 0:
         is_dashing = True
-        if direction:
-            player_speed += player_dash_speed
+        if not player_speed >= 5:
+            if direction:
+                player_speed += player_dash_speed
+            else:
+                player_speed -= player_dash_speed
         else:
-            player_speed -= player_dash_speed
+            player_speed += player_dash_speed if player_speed >= 0 else -player_dash_speed
         dash_timer = dash_cooldown
     if dash_timer > 0:
         dash_timer -= 1
         
 
-    if keys[pygame.K_UP] and not is_jumping and (is_on_ground or is_on_wall):
+    if  (keys[pygame.K_w] or keys[pygame.K_UP]) and not is_jumping and (is_on_ground or is_on_wall):
         is_jumping = True
         player_velocity[1] = -player_jump_strength
         if is_on_wall:
